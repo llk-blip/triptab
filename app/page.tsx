@@ -20,18 +20,19 @@ export default async function HomePage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-semibold">Your trips</h1>
+        <h1 className="font-display text-2xl font-extrabold">Your trips</h1>
         <Link
           href="/trips/new"
-          className="rounded-lg bg-emerald-600 text-white text-sm font-medium px-4 py-2 hover:bg-emerald-700"
+          className="tt-chunky rounded-[14px] bg-sunny text-ink text-sm font-bold px-4 py-2"
         >
           + New trip
         </Link>
       </div>
 
       {memberships.length === 0 ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-8 text-center text-slate-500">
-          <p className="mb-2">No trips yet.</p>
+        <div className="bg-white rounded-2xl border-2 border-peach p-8 text-center text-warmgray">
+          <div className="text-4xl mb-2">🐯</div>
+          <p className="mb-2 font-semibold text-ink">No trips yet.</p>
           <p className="text-sm">
             Create one, or ask a friend for their trip&apos;s invite link.
           </p>
@@ -42,10 +43,10 @@ export default async function HomePage() {
             <li key={trip.id}>
               <Link
                 href={`/trips/${trip.id}`}
-                className="block bg-white rounded-xl border border-slate-200 p-4 hover:border-emerald-400 transition-colors"
+                className="tt-lift block bg-white rounded-2xl border-2 border-peach p-4"
               >
-                <div className="font-medium">{trip.name}</div>
-                <div className="text-sm text-slate-500 mt-1">
+                <div className="font-display font-bold text-lg">{trip.name}</div>
+                <div className="text-sm text-warmgray mt-1">
                   {trip.baseCurrency} · {trip.destCurrency} · {trip._count.members}{" "}
                   {trip._count.members === 1 ? "traveller" : "travellers"} ·{" "}
                   {trip._count.expenses} expenses

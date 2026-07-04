@@ -8,7 +8,7 @@ function CurrencySelect({ name, defaultValue }: { name: string; defaultValue: st
     <select
       name={name}
       defaultValue={defaultValue}
-      className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+      className="mt-1 w-full rounded-xl border-2 border-peach px-3 py-2 text-sm bg-white focus:outline-none focus:border-sunny"
     >
       {CURRENCIES.map((c) => (
         <option key={c.code} value={c.code}>
@@ -25,35 +25,35 @@ export default async function NewTripPage() {
 
   return (
     <div className="mx-auto max-w-md">
-      <h1 className="text-xl font-semibold mb-4">New trip</h1>
+      <h1 className="font-display text-2xl font-extrabold mb-4">New trip ✈️</h1>
       <form
         action={createTrip}
-        className="bg-white rounded-xl border border-slate-200 p-6 space-y-4"
+        className="bg-white rounded-3xl border-2 border-peach p-6 space-y-4"
       >
         <label className="block">
-          <span className="text-sm font-medium text-slate-700">Trip name</span>
+          <span className="text-sm font-semibold text-ink">Trip name</span>
           <input
             name="name"
             required
             placeholder="Tokyo 2026"
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="mt-1 w-full rounded-xl border-2 border-peach px-3 py-2 text-sm focus:outline-none focus:border-sunny"
           />
         </label>
         <label className="block">
-          <span className="text-sm font-medium text-slate-700">Home currency</span>
-          <span className="block text-xs text-slate-500">
+          <span className="text-sm font-semibold text-ink">Home currency</span>
+          <span className="block text-xs text-warmgray">
             Balances and settlements are shown in this currency.
           </span>
           <CurrencySelect name="baseCurrency" defaultValue="SGD" />
         </label>
         <label className="block">
-          <span className="text-sm font-medium text-slate-700">Destination currency</span>
-          <span className="block text-xs text-slate-500">
+          <span className="text-sm font-semibold text-ink">Destination currency</span>
+          <span className="block text-xs text-warmgray">
             Offered as a quick pick when logging expenses.
           </span>
           <CurrencySelect name="destCurrency" defaultValue="JPY" />
         </label>
-        <button className="w-full rounded-lg bg-emerald-600 text-white font-medium py-2 text-sm hover:bg-emerald-700">
+        <button className="w-full rounded-xl bg-coral text-white font-display font-bold py-2.5 text-sm hover:bg-[#e85d3d]">
           Create trip
         </button>
       </form>

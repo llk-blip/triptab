@@ -11,10 +11,10 @@ import BalancesTab from "@/components/trip/BalancesTab";
 import ActivityTab from "@/components/trip/ActivityTab";
 
 const TABS = [
-  { id: "expenses", label: "Expenses" },
-  { id: "fund", label: "Fund" },
-  { id: "balances", label: "Balances" },
-  { id: "activity", label: "Activity" },
+  { id: "expenses", label: "Expenses", icon: "🧾" },
+  { id: "fund", label: "Fund", icon: "💰" },
+  { id: "balances", label: "Balances", icon: "⚖️" },
+  { id: "activity", label: "Activity", icon: "📜" },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
@@ -37,7 +37,7 @@ export default async function TripPage({
   if (!trip) notFound();
   if (!trip.members.some((m) => m.userId === user.id)) {
     return (
-      <div className="mx-auto max-w-md mt-10 bg-white rounded-xl border border-slate-200 p-6 text-center text-sm text-slate-600">
+      <div className="mx-auto max-w-md mt-10 bg-white rounded-3xl border-2 border-peach p-6 text-center text-sm text-inkmute">
         You&apos;re not a member of this trip. Ask a member for the invite link.
       </div>
     );
@@ -56,8 +56,8 @@ export default async function TripPage({
     <div>
       <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
         <div>
-          <h1 className="text-xl font-semibold">{trip.name}</h1>
-          <p className="text-sm text-slate-500 mt-0.5">
+          <h1 className="font-display text-3xl font-extrabold">{trip.name}</h1>
+          <p className="text-sm text-warmgray mt-0.5">
             Home {trip.baseCurrency} · Destination {trip.destCurrency} ·{" "}
             {trip.members.map((m) => m.user.name).join(", ")}
           </p>
@@ -66,24 +66,26 @@ export default async function TripPage({
       </div>
 
       {finances.summary && (
-        <div className="grid grid-cols-2 gap-2 mb-4">
-          <div className="bg-white rounded-xl border border-slate-200 p-3">
-            <div className="text-xs text-slate-500">Total trip spend</div>
-            <div className="font-semibold mt-0.5">
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <div className="bg-white rounded-2xl border-2 border-peach p-4">
+            <div className="text-xs text-warmgray font-semibold">Total trip spend</div>
+            <div className="font-display text-2xl font-extrabold mt-0.5">
               {formatMinor(finances.summary.totalSpentMinor, trip.baseCurrency)}
             </div>
           </div>
           <div
-            className={`rounded-xl border p-3 ${
+            className={`rounded-2xl border-2 p-4 ${
               finances.summary.fundBalanceMinor < 0
-                ? "bg-red-50 border-red-200"
-                : "bg-emerald-50 border-emerald-200"
+                ? "bg-peachlight border-coral"
+                : "bg-gradient-to-br from-peachlight to-cream border-amber-500"
             }`}
           >
-            <div className="text-xs text-slate-600">🐷 Common fund balance</div>
+            <div className="text-xs text-warmgray font-semibold flex items-center gap-1.5">
+              <span className="text-xl tt-float inline-block">🐯</span>Common fund balance
+            </div>
             <div
-              className={`font-semibold mt-0.5 ${
-                finances.summary.fundBalanceMinor < 0 ? "text-red-700" : "text-emerald-700"
+              className={`font-display text-2xl font-extrabold mt-0.5 ${
+                finances.summary.fundBalanceMinor < 0 ? "text-coral" : "text-coral"
               }`}
             >
               {formatMinor(finances.summary.fundBalanceMinor, trip.baseCurrency)}
@@ -93,7 +95,7 @@ export default async function TripPage({
       )}
 
       {finances.ratesUnavailable && (
-        <div className="mb-4 rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800">
+        <div className="mb-4 rounded-2xl bg-peachlight border-2 border-amber-500 px-4 py-3 text-sm text-ink">
           ⚠️ Live exchange rates are unavailable right now (no internet connection?). Original
           amounts are shown, but converted totals and balances will appear once rates can be
           fetched.
@@ -101,23 +103,23 @@ export default async function TripPage({
       )}
 
       {error && (
-        <div className="mb-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+        <div className="mb-4 rounded-2xl bg-peachlight border-2 border-coral px-4 py-3 text-sm text-coral font-semibold">
           {error}
         </div>
       )}
 
-      <nav className="flex gap-1 mb-4 bg-white rounded-xl border border-slate-200 p-1">
+      <nav className="flex gap-1.5 mb-4 bg-white rounded-2xl border-2 border-peach p-1.5">
         {TABS.map((t) => (
           <Link
             key={t.id}
             href={`/trips/${trip.id}?tab=${t.id}`}
-            className={`flex-1 text-center text-sm font-medium rounded-lg py-2 ${
-              tab === t.id
-                ? "bg-emerald-600 text-white"
-                : "text-slate-600 hover:bg-slate-100"
+            className={`flex-1 text-center text-sm font-bold rounded-xl py-2 ${
+              tab === t.id ? "bg-coral text-white" : "text-inkmute hover:bg-cream"
             }`}
           >
-            {t.label}
+            <span className="mr-1">{t.icon}</span>
+            <span className="hidden sm:inline">{t.label}</span>
+            <span className="sm:hidden text-xs">{t.label}</span>
           </Link>
         ))}
       </nav>
@@ -130,7 +132,7 @@ export default async function TripPage({
         (finances.summary ? (
           <BalancesTab trip={trip} finances={finances} />
         ) : (
-          <p className="text-center text-sm text-slate-500 py-8">
+          <p className="text-center text-sm text-warmgray py-8">
             Balances need exchange rates — reconnect to the internet and refresh.
           </p>
         ))}
