@@ -45,9 +45,11 @@ export default async function TripPage({
 
   const finances = await computeTripFinances(trip);
 
+  // Behind a proxy (Railway), `host` is the internal address; the public
+  // domain arrives in x-forwarded-host.
   const h = await headers();
   const proto = h.get("x-forwarded-proto") ?? "http";
-  const host = h.get("host") ?? "localhost:3000";
+  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
   const inviteUrl = `${proto}://${host}/join/${trip.inviteToken}`;
 
   return (
