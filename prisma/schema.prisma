@@ -1,0 +1,140 @@
+// Trip expense tracker schema.
+// SQLite for zero-setup local use; switch the datasource to postgresql later
+// without changing any model — no SQLite-only types are used.
+// All money is stored as integer minor units (cents) to avoid float drift.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  memberships   TripMember[]
+  expensesPaid  Expense[]          @relation("payer")
+  expensesAdded Expense[]          @relation("expenseCreator")
+  splits        ExpenseSplit[]
+  contributions FundContribution[]
+  activities    ActivityLog[]
+  sessions      Session[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model Trip {
+  id           String   @id @default(cuid())
+  name         String
+  baseCurrency String // e.g. "SGD" — all balances normalize to this
+  destCurrency String // e.g. "JPY" — offered as a quick-pick when logging
+  inviteToken  String   @unique @default(cuid())
+  createdAt    DateTime @default(now())
+
+  members       TripMember[]
+  expenses      Expense[]
+  contributions FundContribution[]
+  activities    ActivityLog[]
+}
+
+model TripMember {
+  id       String   @id @default(cuid())
+  tripId   String
+  userId   String
+  role     String   @default("member") // "organizer" | "member"
+  joinedAt DateTime @default(now())
+
+  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([tripId, userId])
+}
+
+model Expense {
+  id          String   @id @default(cuid())
+  tripId      String
+  description String
+  amountMinor Int // in `currency` minor units, source of truth
+  currency    String
+  date        DateTime
+  // paidFromFund=true → drawn from the common pool, payerId is null and
+  // nobody gets personal credit. Otherwise payerId is the person owed.
+  paidFromFund Boolean @default(false)
+  payerId      String?
+  createdById  String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  trip      Trip           @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  payer     User?          @relation("payer", fields: [payerId], references: [id])
+  createdBy User           @relation("expenseCreator", fields: [createdById], references: [id])
+  splits    ExpenseSplit[]
+}
+
+// Weight-based splits: equal split = weight 1 for each participant;
+// custom = e.g. 2:1:1. Amounts are derived at read time so edits can't
+// leave stale per-person amounts behind.
+model ExpenseSplit {
+  id        String @id @default(cuid())
+  expenseId String
+  userId    String
+  weight    Int    @default(1)
+
+  expense Expense @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([expenseId, userId])
+}
+
+model FundContribution {
+  id          String   @id @default(cuid())
+  tripId      String
+  userId      String
+  amountMinor Int
+  currency    String
+  date        DateTime
+  note        String?
+  createdAt   DateTime @default(now())
+
+  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// One row per (base, day) holding the full rate table as JSON —
+// a single API call caches every target currency for the day.
+model ExchangeRateCache {
+  id        String   @id @default(cuid())
+  base      String
+  day       String // "YYYY-MM-DD"
+  ratesJson String // {"USD":0.74,"JPY":110.2,...}
+  fetchedAt DateTime @default(now())
+
+  @@unique([base, day])
+}
+
+model ActivityLog {
+  id         String   @id @default(cuid())
+  tripId     String
+  userId     String
+  action     String // "created" | "updated" | "deleted" | "joined"
+  entityType String // "expense" | "contribution" | "trip" | "member"
+  summary    String // human-readable, e.g. `expense "Ramen dinner" ¥3,200`
+  createdAt  DateTime @default(now())
+
+  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
