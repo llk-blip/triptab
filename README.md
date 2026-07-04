@@ -1,4 +1,4 @@
-# 👛 WanderPurse — shared trip expense tracker
+# 🧾 TripTab — shared trip expense tracker
 
 A web app for groups of friends travelling together: a shared expense ledger,
 a pooled "common fund", live multi-currency conversion, and a

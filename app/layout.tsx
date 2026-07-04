@@ -11,7 +11,7 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "WanderPurse",
+  title: "TripTab",
   description: "Shared trip expenses, common fund, and who-owes-whom",
 };
 
@@ -25,7 +25,7 @@ export default async function RootLayout({
         <header className="bg-white border-b border-slate-200">
           <div className="mx-auto max-w-3xl px-4 py-3 flex items-center justify-between">
             <Link href="/" className="font-bold text-lg tracking-tight text-emerald-700">
-              👛 WanderPurse
+              🧾 TripTab
             </Link>
             {user && (
               <div className="flex items-center gap-3 text-sm">
