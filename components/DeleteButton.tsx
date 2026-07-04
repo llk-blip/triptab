@@ -7,7 +7,7 @@ export default function DeleteButton({ confirmText }: { confirmText: string }) {
       onClick={(e) => {
         if (!confirm(confirmText)) e.preventDefault();
       }}
-      className="text-xs text-red-500 hover:text-red-700 underline underline-offset-2"
+      className="text-xs text-coral font-semibold hover:text-[#e85d3d] underline underline-offset-2"
     >
       Delete
     </button>

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { tileBg } from "@/lib/fun";
 
 const ICONS: Record<string, string> = {
   created: "➕",
@@ -15,30 +16,40 @@ export default async function ActivityTab({ tripId }: { tripId: string }) {
   });
 
   if (entries.length === 0) {
-    return <p className="text-center text-sm text-slate-500 py-8">No activity yet.</p>;
+    return (
+      <div className="text-center text-sm text-warmgray py-8">
+        <div className="text-4xl mb-2">📜</div>
+        No activity yet.
+      </div>
+    );
   }
 
   return (
-    <ul className="space-y-1.5">
-      {entries.map((e) => (
-        <li
-          key={e.id}
-          className="bg-white rounded-lg border border-slate-200 px-4 py-2.5 text-sm flex items-start gap-2.5"
-        >
-          <span className="shrink-0">{ICONS[e.action] ?? "•"}</span>
-          <span className="min-w-0">
-            <span>{e.summary}</span>
-            <span className="block text-xs text-slate-400 mt-0.5">
-              {e.createdAt.toLocaleString("en-GB", {
-                day: "numeric",
-                month: "short",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
+    <ul className="space-y-2">
+      {entries.map((e) => {
+        const icon = ICONS[e.action] ?? "•";
+        return (
+          <li key={e.id} className="bg-white rounded-2xl px-4 py-3 text-sm flex items-start gap-3">
+            <span
+              className="w-8 h-8 rounded-xl flex items-center justify-center text-base shrink-0"
+              style={{ backgroundColor: tileBg(icon) }}
+            >
+              {icon}
             </span>
-          </span>
-        </li>
-      ))}
+            <span className="min-w-0">
+              <span className="font-medium text-ink">{e.summary}</span>
+              <span className="block text-xs text-warmgray mt-0.5">
+                {e.createdAt.toLocaleString("en-GB", {
+                  day: "numeric",
+                  month: "short",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+            </span>
+          </li>
+        );
+      })}
     </ul>
   );
 }

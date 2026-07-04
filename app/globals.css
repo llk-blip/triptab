@@ -1,10 +1,80 @@
 @import "tailwindcss";
 
-@theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* "Sunny Passport" palette from the Claude Design 2a direction */
+@theme {
+  --color-cream: #fff6ec;
+  --color-peach: #ffe4ce;
+  --color-peachlight: #ffebd1;
+  --color-ink: #1f3a3d;
+  --color-inkmute: #5b6b6c;
+  --color-warmgray: #8a7f72;
+  --color-coral: #ff6b4a;
+  --color-sunny: #ffc542;
+  --color-sunnydark: #e0a828;
+  --color-leaf: #2fae7c;
+
+  --font-display: var(--font-baloo), ui-rounded, system-ui, sans-serif;
 }
 
 body {
-  @apply bg-slate-100 text-slate-900;
+  @apply bg-cream text-ink;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+@keyframes tt-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes tt-pop {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.tt-float {
+  animation: tt-float 1.8s ease-in-out infinite;
+}
+
+.tt-pop {
+  animation: tt-pop 0.25s ease;
+}
+
+/* Chunky "press me" button treatment for the sunny yellow actions */
+.tt-chunky {
+  box-shadow: 0 3px 0 var(--color-sunnydark);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+.tt-chunky:hover {
+  transform: translateY(-1px);
+}
+.tt-chunky:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--color-sunnydark);
+}
+
+/* Gentle lift on hoverable cards */
+.tt-lift {
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.tt-lift:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(31, 58, 61, 0.1);
 }
